@@ -1,2 +1,2 @@
 # ERC3156-starknet
-ERC3156 implementation in starknet
+Flash Loan (ERC3156) implementation in starknet
