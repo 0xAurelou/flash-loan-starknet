@@ -3,6 +3,7 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math_cmp import is_le
 from starkware.cairo.common.uint256 import Uint256
+from starkware.cairo.common.alloc import alloc
 from starkware.starknet.common.syscalls import get_caller_address, get_contract_address
 
 from contracts.interfaces.IERC3156FlashLender import IERC3156FlashLender
@@ -64,8 +65,10 @@ func flashLoan{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     with_attr error_message("Transfer failed") {
         assert transfer_status = 1;
     }
+    let (parameter: felt*) = alloc();
+    assert [parameter] = 'single';
     let (flash_loan_status: felt) = IERC3156FlashBorrower.onFlashLoan(
-        contract_address, caller_address, token, amount, fee, 'single'
+        contract_address, caller_address, token, amount, fee, 1, parameter
     );
     with_attr error_message("Flash loan failed") {
         assert flash_loan_status = 1;
@@ -80,7 +83,6 @@ func flashLoan{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     return (1,);
 }
 
-// TODO Use 64*61
 func _flashFee{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     token_address: felt, amount: Uint256
 ) -> (fee: Uint256) {

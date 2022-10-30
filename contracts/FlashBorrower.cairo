@@ -29,8 +29,13 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
 // Only consider to use a single flashLoan for the moment
 @external
 func onFlashLoan{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-    initiator_address: felt, token_address: felt, amount: Uint256, fee: Uint256,
-    calldata_len : felt, calldata : felt*) -> (return_code: felt) {
+    initiator_address: felt,
+    token_address: felt,
+    amount: Uint256,
+    fee: Uint256,
+    calldata_len: felt,
+    calldata: felt*,
+) -> (return_code: felt) {
     let (caller_address: felt) = get_caller_address();
     with_attr error_message("FlashBorrower : untrust initiator") {
         assert caller_address = initiator_address;
@@ -51,7 +56,6 @@ func FlashBorrow{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     let (caller_address: felt) = get_caller_address();
     let (lender_contract: felt) = lender.read();
     let (allowance_: Uint256) = IERC20.allowance(lender_contract, lender_contract, caller_address);
-    // Need to fix this by using 64*61 bit
     let (fee_: Uint256) = SafeUint256.mul(amount, Uint256(1, 0));
     let (repayement_amount: Uint256) = SafeUint256.add(amount, fee_);
     IERC20.approve(lender_contract, caller_address, repayement_amount);

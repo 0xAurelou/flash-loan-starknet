@@ -85,7 +85,7 @@ func flashLoan{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     let (calldata) = alloc();
     assert [calldata] = 'single';
     let (flash_loan_status: felt) = IERC3156FlashBorrower.onFlashLoan(
-        contract_address, caller_address, token, amount, fee, 1,calldata
+        contract_address, caller_address, token, amount, fee, 1, calldata
     );
     with_attr error_message("Flash loan failed") {
         assert flash_loan_status = SUCCESS;
@@ -100,7 +100,6 @@ func flashLoan{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     return (SUCCESS,);
 }
 
-// TODO Use 64*61
 func _flashFee{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     token_address: felt, amount: Uint256
 ) -> (fee: Uint256) {
